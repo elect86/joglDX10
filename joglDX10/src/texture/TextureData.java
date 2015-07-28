@@ -57,7 +57,7 @@ import com.jogamp.opengl.util.GLPixelBuffer.GLPixelAttributes;
 
 public class TextureData {
     /** ColorSpace of pixel data. */
-    public static enum ColorSpace { RGB, YCbCr, YCCK, CMYK };
+    public static enum ColorSpace { RGB, sRGB, YCbCr, YCCK, CMYK };
 
     protected int width;
     protected int height;

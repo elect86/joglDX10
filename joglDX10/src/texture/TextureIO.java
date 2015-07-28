@@ -945,9 +945,6 @@ public class TextureIO {
                 case DDSImage.D3DFMT_DXT5:
                     internalFormat = GL.GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
                     break;
-                case DDSImage.DDPF_FOURCC_DX10:
-                    internalFormat = GL.GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-                    break;
                 default:
                     throw new RuntimeException("Unsupported DDS compression format \"" +
                                                DDSImage.getCompressionFormatName(info.getCompressionFormat()) + "\"");

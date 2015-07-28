@@ -54,7 +54,7 @@ import com.jogamp.opengl.GL;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.common.util.IOUtil;
-import com.jogamp.opengl.util.GLBuffers;
+import texture.spi.DXT10.Header.DxgiFormat;
 
 /** A reader and writer for DirectDraw Surface (.dds) files, which are
     used to describe textures. These files can contain multiple mipmap
@@ -288,12 +288,12 @@ public class DDSImage {
         final FileChannel chan = stream.getChannel();
         // Create ByteBuffer for header in case the start of our
         // ByteBuffer isn't actually memory-mapped
-        final ByteBuffer hdr = ByteBuffer.allocate(Header.writtenSize());
+        final ByteBuffer hdr = ByteBuffer.allocate(header.writtenSize());
         hdr.order(ByteOrder.LITTLE_ENDIAN);
         header.write(hdr);
         hdr.rewind();
         chan.write(hdr);
-        buf.position(Header.writtenSize());
+        buf.position(header.writtenSize());
         chan.write(buf);
         chan.force(true);
         chan.close();
@@ -317,9 +317,10 @@ public class DDSImage {
         heuristics. Returns D3DFMT_UNKNOWN if could not recognize the
         pixel format. */
     public int getPixelFormat() {
-        if (isCompressed()) {
-            return getCompressionFormat();
-        } else if (isPixelFormatFlagSet(DDPF_RGB)) {
+        if(header.pfFourCC == DDPF_FOURCC_DX10) {
+            return header.dxgiFormat;
+        }
+        if (isPixelFormatFlagSet(DDPF_RGB)) {
             if (isPixelFormatFlagSet(DDPF_ALPHAPIXELS)) {
                 if (getDepth() == 32 &&
                     header.pfRBitMask == 0x00FF0000 &&
@@ -342,9 +343,43 @@ public class DDSImage {
                 }
             }
         }
-
         return D3DFMT_UNKNOWN;
     }
+    
+    public int getGLpixelFormat() {
+        if(header.pfFourCC == DDPF_FOURCC_DX10) {
+            return DXT10.getGLinternalFormat(header.dxgiFormat);
+        }
+        if (isPixelFormatFlagSet(DDPF_RGB)) {
+            if (isPixelFormatFlagSet(DDPF_ALPHAPIXELS)) {
+                if (getDepth() == 32 &&
+                    header.pfRBitMask == 0x00FF0000 &&
+                    header.pfGBitMask == 0x0000FF00 &&
+                    header.pfBBitMask == 0x000000FF &&
+                    header.pfABitMask == 0xFF000000) {
+                    return GL.GL_RGBA;
+                }
+            } else {
+                if (getDepth() == 24 &&
+                    header.pfRBitMask == 0x00FF0000 &&
+                    header.pfGBitMask == 0x0000FF00 &&
+                    header.pfBBitMask == 0x000000FF) {
+                    return GL.GL_RGB;
+                } else if (getDepth() == 32 &&
+                           header.pfRBitMask == 0x00FF0000 &&
+                           header.pfGBitMask == 0x0000FF00 &&
+                           header.pfBBitMask == 0x000000FF) {
+                    return GL.GL_RGBA;
+                }
+            }
+        }
+    }
+    
+//    public int getInternalFormat() {
+//        if(isCompressed()) {
+//            return getCompressionFormat();
+//        } else
+//    }
 
     /**
      * Indicates whether this texture is cubemap
@@ -365,13 +400,22 @@ public class DDSImage {
 
     /** Indicates whether this texture is compressed. */
     public boolean isCompressed() {
+        
+        if(header.pfFourCC == DDPF_FOURCC_DX10) {
+            
+            return (header.dxgiFormat >= DxgiFormat.DXGI_FORMAT_BC1_TYPELESS 
+                    && header.dxgiFormat <= DxgiFormat.DXGI_FORMAT_BC5_SNORM
+                    && header.dxgiFormat >= DxgiFormat.DXGI_FORMAT_BC6H_TYPELESS
+                    && header.dxgiFormat <= DxgiFormat.DXGI_FORMAT_BC7_UNORM_SRGB
+                    && header.dxgiFormat >= DxgiFormat.DXGI_FORMAT_ASTC_4X4_UNORM);
+        }
         return (isPixelFormatFlagSet(DDPF_FOURCC));
     }
 
     /** If this surface is compressed, returns the kind of compression
         used (DXT1..DXT5). */
     public int getCompressionFormat() {
-        return header.pfFourCC;
+        return header.pfFourCC == DDPF_FOURCC_DX10 ? header.pfFourCC : header.dxgiFormat;
     }
 
     /** Width of the texture (or the top-most mipmap if mipmaps are
@@ -427,7 +471,7 @@ public class DDSImage {
         }
 
         // Figure out how far to seek
-        int seek = Header.writtenSize();
+        int seek = header.writtenSize();
         if (isCubemap()) {
             seek += sideShiftInBytes(side);
         }
@@ -719,18 +763,26 @@ public class DDSImage {
             buf.putInt(ddsCapsReserved1);
             buf.putInt(ddsCapsReserved2);
             buf.putInt(textureStage);
+            
+            if(pfFourCC == DDPF_FOURCC_DX10) {
+                buf.putInt(dxgiFormat);
+                buf.putInt(resourceDimension);
+                buf.putInt(miscFlag);
+                buf.putInt(arraySize);
+                buf.putInt(miscFlag2);
+            }
         }
 
-        private static int size() {
-            return 124;
+        private int size() {
+            return 124 + pfFourCC == DDPF_FOURCC_DX10 ? 20 : 0;
         }
 
-        private static int pfSize() {
+        private int pfSize() {
             return 32;
         }
 
-        private static int writtenSize() {
-            return 128;
+        private int writtenSize() {
+            return 128 + pfFourCC == DDPF_FOURCC_DX10 ? 20 : 0;
         }
     }
 
@@ -798,9 +850,9 @@ public class DDSImage {
         }
 
         // OK, create one large ByteBuffer to hold all of the mipmap data
-        totalSize += Header.writtenSize();
+        totalSize += header.writtenSize();
         final ByteBuffer buf = ByteBuffer.allocate(totalSize);
-        buf.position(Header.writtenSize());
+        buf.position(header.writtenSize());
         for (int i = 0; i < mipmapData.length; i++) {
             buf.put(mipmapData[i]);
         }
@@ -808,7 +860,7 @@ public class DDSImage {
 
         // Allocate and initialize a Header
         header = new Header();
-        header.size = Header.size();
+        header.size = header.size();
         header.flags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
         if (mipmapData.length > 1) {
             header.flags |= DDSD_MIPMAPCOUNT;
@@ -837,7 +889,7 @@ public class DDSImage {
             }
         }
         header.pitchOrLinearSize = pitchOrLinearSize;
-        header.pfSize = Header.pfSize();
+        header.pfSize = header.pfSize();
         // Not sure whether we can get away with leaving the rest of the
         // header blank
     }
