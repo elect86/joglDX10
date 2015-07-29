@@ -54,12 +54,15 @@ import com.jogamp.opengl.GL;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.common.util.IOUtil;
-import texture.spi.DXT10.Header.DxgiFormat;
+import static texture.spi.DDSresources.Dx9.D3dFormat.*;
+import static texture.spi.DDSresources.Dx9.*;
 
 /** A reader and writer for DirectDraw Surface (.dds) files, which are
     used to describe textures. These files can contain multiple mipmap
     levels in one file. This class is currently minimal and does not
-    support all of the possible file formats. */
+    support all of the possible file formats. 
+    
+    */
 
 public class DDSImage {
 
@@ -93,70 +96,6 @@ public class DDSImage {
     private FileChannel     chan;
     private ByteBuffer buf;
     private Header header;
-
-    //
-    // Selected bits in header flags
-    //
-
-    public static final int DDSD_CAPS            = 0x00000001; // Capacities are valid
-    public static final int DDSD_HEIGHT          = 0x00000002; // Height is valid
-    public static final int DDSD_WIDTH           = 0x00000004; // Width is valid
-    public static final int DDSD_PITCH           = 0x00000008; // Pitch is valid
-    public static final int DDSD_BACKBUFFERCOUNT = 0x00000020; // Back buffer count is valid
-    public static final int DDSD_ZBUFFERBITDEPTH = 0x00000040; // Z-buffer bit depth is valid (shouldn't be used in DDSURFACEDESC2)
-    public static final int DDSD_ALPHABITDEPTH   = 0x00000080; // Alpha bit depth is valid
-    public static final int DDSD_LPSURFACE       = 0x00000800; // lpSurface is valid
-    public static final int DDSD_PIXELFORMAT     = 0x00001000; // ddpfPixelFormat is valid
-    public static final int DDSD_MIPMAPCOUNT     = 0x00020000; // Mip map count is valid
-    public static final int DDSD_LINEARSIZE      = 0x00080000; // dwLinearSize is valid
-    public static final int DDSD_DEPTH           = 0x00800000; // dwDepth is valid
-
-    public static final int DDPF_ALPHAPIXELS     = 0x00000001; // Alpha channel is present
-    public static final int DDPF_ALPHA           = 0x00000002; // Only contains alpha information
-    public static final int DDPF_FOURCC          = 0x00000004; // FourCC code is valid
-    public static final int DDPF_PALETTEINDEXED4 = 0x00000008; // Surface is 4-bit color indexed
-    public static final int DDPF_PALETTEINDEXEDTO8 = 0x00000010; // Surface is indexed into a palette which stores indices
-    // into the destination surface's 8-bit palette
-    public static final int DDPF_PALETTEINDEXED8 = 0x00000020; // Surface is 8-bit color indexed
-    public static final int DDPF_RGB             = 0x00000040; // RGB data is present
-    public static final int DDPF_COMPRESSED      = 0x00000080; // Surface will accept pixel data in the format specified
-    // and compress it during the write
-    public static final int DDPF_RGBTOYUV        = 0x00000100; // Surface will accept RGB data and translate it during
-    // the write to YUV data. The format of the data to be written
-    // will be contained in the pixel format structure. The DDPF_RGB
-    // flag will be set.
-    public static final int DDPF_YUV             = 0x00000200; // Pixel format is YUV - YUV data in pixel format struct is valid
-    public static final int DDPF_ZBUFFER         = 0x00000400; // Pixel format is a z buffer only surface
-    public static final int DDPF_PALETTEINDEXED1 = 0x00000800; // Surface is 1-bit color indexed
-    public static final int DDPF_PALETTEINDEXED2 = 0x00001000; // Surface is 2-bit color indexed
-    public static final int DDPF_ZPIXELS         = 0x00002000; // Surface contains Z information in the pixels
-
-    // Selected bits in DDS capabilities flags
-    public static final int DDSCAPS_TEXTURE      = 0x00001000; // Can be used as a texture
-    public static final int DDSCAPS_MIPMAP       = 0x00400000; // Is one level of a mip-map
-    public static final int DDSCAPS_COMPLEX      = 0x00000008; // Complex surface structure, such as a cube map
-
-    // Selected bits in DDS extended capabilities flags
-    public static final int DDSCAPS2_CUBEMAP           = 0x00000200;
-    public static final int DDSCAPS2_CUBEMAP_POSITIVEX = 0x00000400;
-    public static final int DDSCAPS2_CUBEMAP_NEGATIVEX = 0x00000800;
-    public static final int DDSCAPS2_CUBEMAP_POSITIVEY = 0x00001000;
-    public static final int DDSCAPS2_CUBEMAP_NEGATIVEY = 0x00002000;
-    public static final int DDSCAPS2_CUBEMAP_POSITIVEZ = 0x00004000;
-    public static final int DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x00008000;
-
-    // Known pixel formats
-    public static final int D3DFMT_UNKNOWN   =  0;
-    public static final int D3DFMT_R8G8B8    =  20;
-    public static final int D3DFMT_A8R8G8B8  =  21;
-    public static final int D3DFMT_X8R8G8B8  =  22;
-    // The following are also valid FourCC codes
-    public static final int DDPF_FOURCC_DX10 =  0x30315844;
-    public static final int D3DFMT_DXT1      =  0x31545844;
-    public static final int D3DFMT_DXT2      =  0x32545844;
-    public static final int D3DFMT_DXT3      =  0x33545844;
-    public static final int D3DFMT_DXT4      =  0x34545844;
-    public static final int D3DFMT_DXT5      =  0x35545844;
 
     /** Reads a DirectDraw surface from the specified file name,
         returning the resulting DDSImage.
@@ -317,8 +256,8 @@ public class DDSImage {
         heuristics. Returns D3DFMT_UNKNOWN if could not recognize the
         pixel format. */
     public int getPixelFormat() {
-        if(header.pfFourCC == DDPF_FOURCC_DX10) {
-            return header.dxgiFormat;
+        if (isCompressed()) {
+            return getCompressionFormat();
         }
         if (isPixelFormatFlagSet(DDPF_RGB)) {
             if (isPixelFormatFlagSet(DDPF_ALPHAPIXELS)) {
@@ -345,41 +284,6 @@ public class DDSImage {
         }
         return D3DFMT_UNKNOWN;
     }
-    
-    public int getGLpixelFormat() {
-        if(header.pfFourCC == DDPF_FOURCC_DX10) {
-            return DXT10.getGLinternalFormat(header.dxgiFormat);
-        }
-        if (isPixelFormatFlagSet(DDPF_RGB)) {
-            if (isPixelFormatFlagSet(DDPF_ALPHAPIXELS)) {
-                if (getDepth() == 32 &&
-                    header.pfRBitMask == 0x00FF0000 &&
-                    header.pfGBitMask == 0x0000FF00 &&
-                    header.pfBBitMask == 0x000000FF &&
-                    header.pfABitMask == 0xFF000000) {
-                    return GL.GL_RGBA;
-                }
-            } else {
-                if (getDepth() == 24 &&
-                    header.pfRBitMask == 0x00FF0000 &&
-                    header.pfGBitMask == 0x0000FF00 &&
-                    header.pfBBitMask == 0x000000FF) {
-                    return GL.GL_RGB;
-                } else if (getDepth() == 32 &&
-                           header.pfRBitMask == 0x00FF0000 &&
-                           header.pfGBitMask == 0x0000FF00 &&
-                           header.pfBBitMask == 0x000000FF) {
-                    return GL.GL_RGBA;
-                }
-            }
-        }
-    }
-    
-//    public int getInternalFormat() {
-//        if(isCompressed()) {
-//            return getCompressionFormat();
-//        } else
-//    }
 
     /**
      * Indicates whether this texture is cubemap
@@ -398,24 +302,24 @@ public class DDSImage {
         return isCubemap() && (header.ddsCaps2 & side) != 0;
     }
 
-    /** Indicates whether this texture is compressed. */
+    /** Indicates whether this texture is compressed. 
+     *  DX9 and previous, used to set DDS_FOURCC in the dwFlags and then save 
+     *  the corresponding compression format in the DDS_PIXELFORMAT structure. 
+     *  Starting from DX10, instead, we have a new header that contains the 
+     *  format. MS suggests to  write DXT1-5 as DX9 for maximum compatibility, 
+     *  so we cannot be sure and we have to check both ways. The worst is that 
+     *  DX10 use the format field obviously also for non compressed formats. 
+     *  So we need to check against every single format.
+     */
     public boolean isCompressed() {
-        
-        if(header.pfFourCC == DDPF_FOURCC_DX10) {
-            
-            return (header.dxgiFormat >= DxgiFormat.DXGI_FORMAT_BC1_TYPELESS 
-                    && header.dxgiFormat <= DxgiFormat.DXGI_FORMAT_BC5_SNORM
-                    && header.dxgiFormat >= DxgiFormat.DXGI_FORMAT_BC6H_TYPELESS
-                    && header.dxgiFormat <= DxgiFormat.DXGI_FORMAT_BC7_UNORM_SRGB
-                    && header.dxgiFormat >= DxgiFormat.DXGI_FORMAT_ASTC_4X4_UNORM);
-        }
-        return (isPixelFormatFlagSet(DDPF_FOURCC));
+//        return (isPixelFormatFlagSet(DDPF_FOURCC));
+        return isPixelFormatFlagSet(DDPF_FOURCC) ? DDSutil.isCompressed(header.pfFourCC) :
     }
 
     /** If this surface is compressed, returns the kind of compression
         used (DXT1..DXT5). */
     public int getCompressionFormat() {
-        return header.pfFourCC == DDPF_FOURCC_DX10 ? header.pfFourCC : header.dxgiFormat;
+        return header.pfFourCC != FOURCC_DX10 ? header.pfFourCC : header.dxgiFormat;
     }
 
     /** Width of the texture (or the top-most mipmap if mipmaps are
@@ -720,7 +624,7 @@ public class DDSImage {
             ddsCapsReserved2              = buf.getInt();
             textureStage                  = buf.getInt();
             
-            if(pfFourCC == DDPF_FOURCC_DX10) {
+            if(pfFourCC == FOURCC_DX10) {
                 dxgiFormat        = buf.getInt();
                 resourceDimension = buf.getInt();
                 miscFlag          = buf.getInt();
@@ -764,7 +668,7 @@ public class DDSImage {
             buf.putInt(ddsCapsReserved2);
             buf.putInt(textureStage);
             
-            if(pfFourCC == DDPF_FOURCC_DX10) {
+            if(pfFourCC == FOURCC_DX10) {
                 buf.putInt(dxgiFormat);
                 buf.putInt(resourceDimension);
                 buf.putInt(miscFlag);
@@ -774,7 +678,7 @@ public class DDSImage {
         }
 
         private int size() {
-            return 124 + pfFourCC == DDPF_FOURCC_DX10 ? 20 : 0;
+            return 124 + pfFourCC == FOURCC_DX10 ? 20 : 0;
         }
 
         private int pfSize() {
@@ -782,7 +686,7 @@ public class DDSImage {
         }
 
         private int writtenSize() {
-            return 128 + pfFourCC == DDPF_FOURCC_DX10 ? 20 : 0;
+            return 128 + pfFourCC == FOURCC_DX10 ? 20 : 0;
         }
     }
 
