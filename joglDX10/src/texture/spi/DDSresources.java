@@ -82,6 +82,10 @@ public class DDSresources {
     public static final int DDSCAPS2_CUBEMAP_NEGATIVEY = 0x00002000;
     public static final int DDSCAPS2_CUBEMAP_POSITIVEZ = 0x00004000;
     public static final int DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x00008000;
+    public static final int DDSCAPS2_VOLUME = 0x00200000;
+    public static final int DDSCAPS2_CUBEMAP_ALLFACES = DDSCAPS2_CUBEMAP_POSITIVEX
+            | DDSCAPS2_CUBEMAP_NEGATIVEX | DDSCAPS2_CUBEMAP_POSITIVEY | DDSCAPS2_CUBEMAP_NEGATIVEY
+            | DDSCAPS2_CUBEMAP_POSITIVEZ | DDSCAPS2_CUBEMAP_NEGATIVEZ;
     // http://gli.g-truc.net/0.6.0/api/a00001.html
     public static final int DDPF_LUMINANCE = 0x00020000;
     public static final int DDPF_LUMINANCE_ALPHA = DDPF_LUMINANCE | DDPF_ALPHA;
@@ -89,6 +93,12 @@ public class DDSresources {
     public static final int DDPF_RGBAPIXELS = DDPF_RGB | DDPF_ALPHAPIXELS;
     public static final int DDPF_RGBA = DDPF_RGB | DDPF_ALPHA;
     public static final int DDPF_LUMINANCE_ALPHAPIXELS = DDPF_LUMINANCE | DDPF_ALPHAPIXELS;
+    
+    public static final int DDS_RGBA = DDPF_RGB | DDPF_ALPHAPIXELS;
+    public static final int DDS_RGB = DDPF_RGB;
+    public static final int DDS_ALPHA = DDPF_ALPHA;
+    public static final int DDS_LUMINANCE = DDPF_LUMINANCE;
+    public static final int DDS_FOURCC = DDPF_FOURCC;
 
     /**
      * https://msdn.microsoft.com/en-us/library/windows/desktop/bb172558%28v=vs.85%29.aspx
@@ -196,6 +206,28 @@ public class DDSresources {
 
         public static final int D3DFMT_FORCE_DWORD = 0x7fffffff;
 
+        public static int[] compressedFormats = new int[]{
+            D3DFMT_UYVY,
+            D3DFMT_R8G8_B8G8,
+            D3DFMT_YUY2,
+            D3DFMT_G8R8_G8B8,
+            D3DFMT_DXT1,
+            D3DFMT_DXT2,
+            D3DFMT_DXT3,
+            D3DFMT_DXT4,
+            D3DFMT_DXT5,
+            D3DFMT_MULTI2_ARGB8,
+            D3DFMT_ATI1,
+            D3DFMT_AT1N,
+            D3DFMT_ATI2,
+            D3DFMT_AT2N,
+            D3DFMT_ETC,
+            D3DFMT_ETC1,
+            D3DFMT_ATC,
+            D3DFMT_ATCA,
+            D3DFMT_ATCI,
+            D3DFMT_POWERVR_2BPP,
+            D3DFMT_POWERVR_4BPP};
     }
 
     /**
@@ -366,154 +398,134 @@ public class DDSresources {
         public final static int DXGI_FORMAT_ASTC_12X12_UNORM_SRGB = 187;
         public final static int DXGI_FORMAT_LAST = DXGI_FORMAT_ASTC_12X12_UNORM_SRGB;
         public final static int DXGI_FORMAT_FORCE_UINT = 0xffffffff;
-    }
 
-//        public static class D3d10ResourceDimension {
-//
-//            public static final int DDS_DIMENSION_TEXTURE1D = 2;
-//            public static final int DDS_DIMENSION_TEXTURE2D = 3;
-//            public static final int DDS_DIMENSION_TEXTURE3D = 4;
-//        }
-//
-//        public static class Uint {
-//
-//            /**
-//             * miscFlag.
-//             */
-//            public static final int D3D10_RESOURCE_MISC_GENERATE_MIPS = (int) 0x1L;
-//            public static final int D3D10_RESOURCE_MISC_SHARED = (int) 0x2L;
-//            public static final int D3D10_RESOURCE_MISC_TEXTURECUBE = (int) 0x4L;
-//            public static final int D3D10_RESOURCE_MISC_SHARED_KEYEDMUTEX = (int) 0x10L;
-//            public static final int D3D10_RESOURCE_MISC_GDI_COMPATIBLE = (int) 0x20L;
-//            public static final int DDS_RESOURCE_MISC_TEXTURECUBE = (int) 0x4;
-//            /**
-//             * miscFlag2.
-//             */
-//            public static final int DDS_ALPHA_MODE_UNKNOWN = (int) 0x0;
-//            public static final int DDS_ALPHA_MODE_STRAIGHT = (int) 0x1;
-//            public static final int DDS_ALPHA_MODE_PREMULTIPLIED = (int) 0x2;
-//            public static final int DDS_ALPHA_MODE_OPAQUE = (int) 0x3;
-//            public static final int DDS_ALPHA_MODE_CUSTOM = (int) 0x4;
-//        }
-    public static int[] compressedFormats = new int[]{
-        // dx9
-        D3DFMT_UYVY,
-        D3DFMT_R8G8_B8G8,
-        D3DFMT_YUY2,
-        D3DFMT_G8R8_G8B8,
-        D3DFMT_DXT1,
-        D3DFMT_DXT2,
-        D3DFMT_DXT3,
-        D3DFMT_DXT4,
-        D3DFMT_DXT5,
-        D3DFMT_MULTI2_ARGB8,
-        D3DFMT_ATI1,
-        D3DFMT_AT1N,
-        D3DFMT_ATI2,
-        D3DFMT_AT2N,
-        D3DFMT_ETC,
-        D3DFMT_ETC1,
-        D3DFMT_ATC,
-        D3DFMT_ATCA,
-        D3DFMT_ATCI,
-        D3DFMT_POWERVR_2BPP,
-        D3DFMT_POWERVR_4BPP,
-        //dx10
-        DXGI_FORMAT_R9G9B9E5_SHAREDEXP,
-        DXGI_FORMAT_R8G8_B8G8_UNORM,
-        DXGI_FORMAT_G8R8_G8B8_UNORM,
-        DXGI_FORMAT_BC1_TYPELESS,
-        DXGI_FORMAT_BC1_UNORM,
-        DXGI_FORMAT_BC1_UNORM_SRGB,
-        DXGI_FORMAT_BC2_TYPELESS,
-        DXGI_FORMAT_BC2_UNORM,
-        DXGI_FORMAT_BC2_UNORM_SRGB,
-        DXGI_FORMAT_BC3_TYPELESS,
-        DXGI_FORMAT_BC3_UNORM,
-        DXGI_FORMAT_BC3_UNORM_SRGB,
-        DXGI_FORMAT_BC4_TYPELESS,
-        DXGI_FORMAT_BC4_UNORM,
-        DXGI_FORMAT_BC4_SNORM,
-        DXGI_FORMAT_BC5_TYPELESS,
-        DXGI_FORMAT_BC5_UNORM,
-        DXGI_FORMAT_BC5_SNORM,
-        DXGI_FORMAT_B5G6R5_UNORM,
-        DXGI_FORMAT_B5G5R5A1_UNORM,
-        DXGI_FORMAT_B8G8R8A8_UNORM,
-        DXGI_FORMAT_B8G8R8X8_UNORM,
-        DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM,
-        DXGI_FORMAT_B8G8R8A8_TYPELESS,
-        DXGI_FORMAT_B8G8R8A8_UNORM_SRGB,
-        DXGI_FORMAT_B8G8R8X8_TYPELESS,
-        DXGI_FORMAT_B8G8R8X8_UNORM_SRGB,
-        DXGI_FORMAT_BC6H_TYPELESS,
-        DXGI_FORMAT_BC6H_UF16,
-        DXGI_FORMAT_BC6H_SF16,
-        DXGI_FORMAT_BC7_TYPELESS,
-        DXGI_FORMAT_BC7_UNORM,
-        DXGI_FORMAT_BC7_UNORM_SRGB,
-        DXGI_FORMAT_AYUV,
-        DXGI_FORMAT_Y410,
-        DXGI_FORMAT_Y416,
-        DXGI_FORMAT_NV12,
-        DXGI_FORMAT_P010,
-        DXGI_FORMAT_P016,
-        DXGI_FORMAT_420_OPAQUE,
-        DXGI_FORMAT_YUY2,
-        DXGI_FORMAT_Y210,
-        DXGI_FORMAT_Y216,
-        DXGI_FORMAT_NV11,
-        DXGI_FORMAT_AI44,
-        DXGI_FORMAT_IA44,
-        DXGI_FORMAT_P8,
-        DXGI_FORMAT_A8P8,
-        DXGI_FORMAT_B4G4R4A4_UNORM,
-        DXGI_FORMAT_P208,
-        DXGI_FORMAT_V208,
-        DXGI_FORMAT_V408,
-        DXGI_FORMAT_ASTC_4X4_TYPELESS,
-        DXGI_FORMAT_ASTC_4X4_UNORM,
-        DXGI_FORMAT_ASTC_4X4_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_5X4_TYPELESS,
-        DXGI_FORMAT_ASTC_5X4_UNORM,
-        DXGI_FORMAT_ASTC_5X4_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_5X5_TYPELESS,
-        DXGI_FORMAT_ASTC_5X5_UNORM,
-        DXGI_FORMAT_ASTC_5X5_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_6X5_TYPELESS,
-        DXGI_FORMAT_ASTC_6X5_UNORM,
-        DXGI_FORMAT_ASTC_6X5_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_6X6_TYPELESS,
-        DXGI_FORMAT_ASTC_6X6_UNORM,
-        DXGI_FORMAT_ASTC_6X6_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_8X5_TYPELESS,
-        DXGI_FORMAT_ASTC_8X5_UNORM,
-        DXGI_FORMAT_ASTC_8X5_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_8X6_TYPELESS,
-        DXGI_FORMAT_ASTC_8X6_UNORM,
-        DXGI_FORMAT_ASTC_8X6_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_8X8_TYPELESS,
-        DXGI_FORMAT_ASTC_8X8_UNORM,
-        DXGI_FORMAT_ASTC_8X8_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_10X5_TYPELESS,
-        DXGI_FORMAT_ASTC_10X5_UNORM,
-        DXGI_FORMAT_ASTC_10X5_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_10X6_TYPELESS,
-        DXGI_FORMAT_ASTC_10X6_UNORM,
-        DXGI_FORMAT_ASTC_10X6_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_10X8_TYPELESS,
-        DXGI_FORMAT_ASTC_10X8_UNORM,
-        DXGI_FORMAT_ASTC_10X8_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_10X10_TYPELESS,
-        DXGI_FORMAT_ASTC_10X10_UNORM,
-        DXGI_FORMAT_ASTC_10X10_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_12X10_TYPELESS,
-        DXGI_FORMAT_ASTC_12X10_UNORM,
-        DXGI_FORMAT_ASTC_12X10_UNORM_SRGB,
-        DXGI_FORMAT_ASTC_12X12_TYPELESS,
-        DXGI_FORMAT_ASTC_12X12_UNORM,
-        DXGI_FORMAT_ASTC_12X12_UNORM_SRGB
-    };
+        public static int[] compressedFormats = new int[]{
+            DXGI_FORMAT_R9G9B9E5_SHAREDEXP,
+            DXGI_FORMAT_R8G8_B8G8_UNORM,
+            DXGI_FORMAT_G8R8_G8B8_UNORM,
+            DXGI_FORMAT_BC1_TYPELESS,
+            DXGI_FORMAT_BC1_UNORM,
+            DXGI_FORMAT_BC1_UNORM_SRGB,
+            DXGI_FORMAT_BC2_TYPELESS,
+            DXGI_FORMAT_BC2_UNORM,
+            DXGI_FORMAT_BC2_UNORM_SRGB,
+            DXGI_FORMAT_BC3_TYPELESS,
+            DXGI_FORMAT_BC3_UNORM,
+            DXGI_FORMAT_BC3_UNORM_SRGB,
+            DXGI_FORMAT_BC4_TYPELESS,
+            DXGI_FORMAT_BC4_UNORM,
+            DXGI_FORMAT_BC4_SNORM,
+            DXGI_FORMAT_BC5_TYPELESS,
+            DXGI_FORMAT_BC5_UNORM,
+            DXGI_FORMAT_BC5_SNORM,
+            DXGI_FORMAT_B5G6R5_UNORM,
+            DXGI_FORMAT_B5G5R5A1_UNORM,
+            DXGI_FORMAT_B8G8R8A8_UNORM,
+            DXGI_FORMAT_B8G8R8X8_UNORM,
+            DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM,
+            DXGI_FORMAT_B8G8R8A8_TYPELESS,
+            DXGI_FORMAT_B8G8R8A8_UNORM_SRGB,
+            DXGI_FORMAT_B8G8R8X8_TYPELESS,
+            DXGI_FORMAT_B8G8R8X8_UNORM_SRGB,
+            DXGI_FORMAT_BC6H_TYPELESS,
+            DXGI_FORMAT_BC6H_UF16,
+            DXGI_FORMAT_BC6H_SF16,
+            DXGI_FORMAT_BC7_TYPELESS,
+            DXGI_FORMAT_BC7_UNORM,
+            DXGI_FORMAT_BC7_UNORM_SRGB,
+            DXGI_FORMAT_AYUV,
+            DXGI_FORMAT_Y410,
+            DXGI_FORMAT_Y416,
+            DXGI_FORMAT_NV12,
+            DXGI_FORMAT_P010,
+            DXGI_FORMAT_P016,
+            DXGI_FORMAT_420_OPAQUE,
+            DXGI_FORMAT_YUY2,
+            DXGI_FORMAT_Y210,
+            DXGI_FORMAT_Y216,
+            DXGI_FORMAT_NV11,
+            DXGI_FORMAT_AI44,
+            DXGI_FORMAT_IA44,
+            DXGI_FORMAT_P8,
+            DXGI_FORMAT_A8P8,
+            DXGI_FORMAT_B4G4R4A4_UNORM,
+            DXGI_FORMAT_P208,
+            DXGI_FORMAT_V208,
+            DXGI_FORMAT_V408,
+            DXGI_FORMAT_ASTC_4X4_TYPELESS,
+            DXGI_FORMAT_ASTC_4X4_UNORM,
+            DXGI_FORMAT_ASTC_4X4_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_5X4_TYPELESS,
+            DXGI_FORMAT_ASTC_5X4_UNORM,
+            DXGI_FORMAT_ASTC_5X4_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_5X5_TYPELESS,
+            DXGI_FORMAT_ASTC_5X5_UNORM,
+            DXGI_FORMAT_ASTC_5X5_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_6X5_TYPELESS,
+            DXGI_FORMAT_ASTC_6X5_UNORM,
+            DXGI_FORMAT_ASTC_6X5_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_6X6_TYPELESS,
+            DXGI_FORMAT_ASTC_6X6_UNORM,
+            DXGI_FORMAT_ASTC_6X6_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_8X5_TYPELESS,
+            DXGI_FORMAT_ASTC_8X5_UNORM,
+            DXGI_FORMAT_ASTC_8X5_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_8X6_TYPELESS,
+            DXGI_FORMAT_ASTC_8X6_UNORM,
+            DXGI_FORMAT_ASTC_8X6_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_8X8_TYPELESS,
+            DXGI_FORMAT_ASTC_8X8_UNORM,
+            DXGI_FORMAT_ASTC_8X8_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_10X5_TYPELESS,
+            DXGI_FORMAT_ASTC_10X5_UNORM,
+            DXGI_FORMAT_ASTC_10X5_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_10X6_TYPELESS,
+            DXGI_FORMAT_ASTC_10X6_UNORM,
+            DXGI_FORMAT_ASTC_10X6_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_10X8_TYPELESS,
+            DXGI_FORMAT_ASTC_10X8_UNORM,
+            DXGI_FORMAT_ASTC_10X8_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_10X10_TYPELESS,
+            DXGI_FORMAT_ASTC_10X10_UNORM,
+            DXGI_FORMAT_ASTC_10X10_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_12X10_TYPELESS,
+            DXGI_FORMAT_ASTC_12X10_UNORM,
+            DXGI_FORMAT_ASTC_12X10_UNORM_SRGB,
+            DXGI_FORMAT_ASTC_12X12_TYPELESS,
+            DXGI_FORMAT_ASTC_12X12_UNORM,
+            DXGI_FORMAT_ASTC_12X12_UNORM_SRGB
+        };
+
+        public static class D3d10ResourceDimension {
+
+            public static final int D3D10_RESOURCE_DIMENSION_UNKNOWN = 0;
+            public static final int D3D10_RESOURCE_DIMENSION_BUFFER = 1;
+            public static final int D3D10_RESOURCE_DIMENSION_TEXTURE1D = 2;
+            public static final int D3D10_RESOURCE_DIMENSION_TEXTURE2D = 3;
+            public static final int D3D10_RESOURCE_DIMENSION_TEXTURE3D = 4;
+        }
+
+        public static class Uint {
+
+            /**
+             * miscFlag.
+             */
+            public static final int D3D10_RESOURCE_MISC_GENERATE_MIPS = (int) 0x1L;
+            public static final int D3D10_RESOURCE_MISC_SHARED = (int) 0x2L;
+            public static final int D3D10_RESOURCE_MISC_TEXTURECUBE = (int) 0x4L;
+            public static final int D3D10_RESOURCE_MISC_SHARED_KEYEDMUTEX = (int) 0x10L;
+            public static final int D3D10_RESOURCE_MISC_GDI_COMPATIBLE = (int) 0x20L;
+            public static final int DDS_RESOURCE_MISC_TEXTURECUBE = (int) 0x4;
+            /**
+             * miscFlag2.
+             */
+            public static final int DDS_ALPHA_MODE_UNKNOWN = (int) 0x0;
+            public static final int DDS_ALPHA_MODE_STRAIGHT = (int) 0x1;
+            public static final int DDS_ALPHA_MODE_PREMULTIPLIED = (int) 0x2;
+            public static final int DDS_ALPHA_MODE_OPAQUE = (int) 0x3;
+            public static final int DDS_ALPHA_MODE_CUSTOM = (int) 0x4;
+        }
+    }
 
     /**
      * Only "broad hardware support" formats supported
@@ -549,11 +561,9 @@ public class DDSresources {
 //        }
 //        return 0;
 //    }
-
-//    public static final int makeFourCC(char ch0, char ch1, char ch2, char ch3) {
-//        return (((int) ch0)) | (((int) ch1) << 8) | (((int) ch2) << 16) | (((int) ch3) << 24);
-//    }
-
+    public static final int makeFourCC(char ch0, char ch1, char ch2, char ch3) {
+        return (((int) ch0)) | (((int) ch1) << 8) | (((int) ch2) << 16) | (((int) ch3) << 24);
+    }
 //    public static void main(String[] args) {
 //        System.out.println("" + makeFourCC('U', 'Y', 'V', 'Y'));
 //        System.out.println("" + makeFourCC('R', 'G', 'B', 'G'));

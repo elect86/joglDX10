@@ -73,6 +73,7 @@ import com.jogamp.opengl.util.GLPixelStorageModes;
 import com.jogamp.opengl.util.PNGPixelRect;
 import com.jogamp.opengl.util.GLPixelBuffer.GLPixelAttributes;
 import texture.spi.DDSImage;
+import texture.spi.DDSutil;
 import texture.spi.JPEGImage;
 import texture.spi.NetPbmTextureWriter;
 import texture.spi.SGIImage;
@@ -923,7 +924,7 @@ public class TextureIO {
                                            int internalFormat,
                                            int pixelFormat,
                                            boolean mipmap) {
-            final DDSImage.ImageInfo info = image.getMipMap(0);
+            final DDSutil.ImageInfo info = image.getMipMap(0);
             if (pixelFormat == 0) {
                 switch (image.getPixelFormat()) {
                 case DDSImage.D3DFMT_R8G8B8:
