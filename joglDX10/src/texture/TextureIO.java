@@ -926,7 +926,7 @@ public class TextureIO {
                                            boolean mipmap) {
             final DDSutil.ImageInfo info = image.getMipMap(0);
             if (pixelFormat == 0) {
-                switch (image.getPixelFormat()) {
+                switch (image.getResourceFormat()) {
                 case DDSImage.D3DFMT_R8G8B8:
                     pixelFormat = GL.GL_RGB;
                     break;
@@ -952,7 +952,7 @@ public class TextureIO {
                 }
             }
             if (internalFormat == 0) {
-                switch (image.getPixelFormat()) {
+                switch (image.getResourceFormat()) {
                 case DDSImage.D3DFMT_R8G8B8:
                     pixelFormat = GL.GL_RGB;
                     break;

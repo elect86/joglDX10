@@ -93,7 +93,7 @@ public class DDSresources {
     public static final int DDPF_RGBAPIXELS = DDPF_RGB | DDPF_ALPHAPIXELS;
     public static final int DDPF_RGBA = DDPF_RGB | DDPF_ALPHA;
     public static final int DDPF_LUMINANCE_ALPHAPIXELS = DDPF_LUMINANCE | DDPF_ALPHAPIXELS;
-    
+
     public static final int DDS_RGBA = DDPF_RGB | DDPF_ALPHAPIXELS;
     public static final int DDS_RGB = DDPF_RGB;
     public static final int DDS_ALPHA = DDPF_ALPHA;
@@ -156,11 +156,13 @@ public class DDSresources {
         public static final int D3DFMT_AT1N = 1311855681;//makeFourCC('A', 'T', '1', 'N');
         public static final int D3DFMT_ATI2 = 843666497;//makeFourCC('A', 'T', 'I', '2');
         public static final int D3DFMT_AT2N = 1311921217;//makeFourCC('A', 'T', '2', 'N');
+        
         public static final int D3DFMT_ETC = 541283397;//makeFourCC('E', 'T', 'C', ' ');
         public static final int D3DFMT_ETC1 = 826496069;//makeFourCC('E', 'T', 'C', '1');
         public static final int D3DFMT_ATC = 541283393;//makeFourCC('A', 'T', 'C', ' ');
         public static final int D3DFMT_ATCA = 1094931521;//makeFourCC('A', 'T', 'C', 'A');
         public static final int D3DFMT_ATCI = 1229149249;//makeFourCC('A', 'T', 'C', 'I');
+        
         public static final int D3DFMT_POWERVR_2BPP = 843273296;//makeFourCC('P', 'T', 'C', '2');
         public static final int D3DFMT_POWERVR_4BPP = 876827728;//makeFourCC('P', 'T', 'C', '4');
 
@@ -172,13 +174,13 @@ public class DDSresources {
         public static final int D3DFMT_D24X4S4 = 79;
         public static final int D3DFMT_D16 = 80;
 
+        public static final int D3DFMT_L16 = 81;
+        
         public static final int D3DFMT_D32F_LOCKABLE = 82;
         public static final int D3DFMT_D24FS8 = 83;
 
         public static final int D3DFMT_D32_LOCKABLE = 84;
         public static final int D3DFMT_S8_LOCKABLE = 85;
-
-        public static final int D3DFMT_L16 = 81;
 
         public static final int D3DFMT_VERTEXDATA = 100;
         public static final int D3DFMT_INDEX16 = 101;
@@ -227,7 +229,31 @@ public class DDSresources {
             D3DFMT_ATCA,
             D3DFMT_ATCI,
             D3DFMT_POWERVR_2BPP,
-            D3DFMT_POWERVR_4BPP};
+            D3DFMT_POWERVR_4BPP
+        };
+        public static int[] supportedCompressedFormats = new int[]{
+            //            D3DFMT_UYVY,
+            //            D3DFMT_R8G8_B8G8,
+            //            D3DFMT_YUY2,
+            //            D3DFMT_G8R8_G8B8,
+            D3DFMT_DXT1,
+            D3DFMT_DXT2,
+            D3DFMT_DXT3,
+            D3DFMT_DXT4,
+            D3DFMT_DXT5,
+            //            D3DFMT_MULTI2_ARGB8,
+            D3DFMT_ATI1,
+            D3DFMT_AT1N,
+            D3DFMT_ATI2,
+            D3DFMT_AT2N,
+            D3DFMT_ETC,
+//            D3DFMT_ETC1,
+            D3DFMT_ATC,
+            D3DFMT_ATCA,
+            D3DFMT_ATCI,
+            D3DFMT_POWERVR_2BPP,
+            D3DFMT_POWERVR_4BPP
+        };
     }
 
     /**
@@ -418,15 +444,15 @@ public class DDSresources {
             DXGI_FORMAT_BC5_TYPELESS,
             DXGI_FORMAT_BC5_UNORM,
             DXGI_FORMAT_BC5_SNORM,
-            DXGI_FORMAT_B5G6R5_UNORM,
-            DXGI_FORMAT_B5G5R5A1_UNORM,
-            DXGI_FORMAT_B8G8R8A8_UNORM,
-            DXGI_FORMAT_B8G8R8X8_UNORM,
-            DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM,
-            DXGI_FORMAT_B8G8R8A8_TYPELESS,
-            DXGI_FORMAT_B8G8R8A8_UNORM_SRGB,
-            DXGI_FORMAT_B8G8R8X8_TYPELESS,
-            DXGI_FORMAT_B8G8R8X8_UNORM_SRGB,
+//            DXGI_FORMAT_B5G6R5_UNORM,
+//            DXGI_FORMAT_B5G5R5A1_UNORM,
+//            DXGI_FORMAT_B8G8R8A8_UNORM,
+//            DXGI_FORMAT_B8G8R8X8_UNORM,
+//            DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM,
+//            DXGI_FORMAT_B8G8R8A8_TYPELESS,
+//            DXGI_FORMAT_B8G8R8A8_UNORM_SRGB,
+//            DXGI_FORMAT_B8G8R8X8_TYPELESS,
+//            DXGI_FORMAT_B8G8R8X8_UNORM_SRGB,
             DXGI_FORMAT_BC6H_TYPELESS,
             DXGI_FORMAT_BC6H_UF16,
             DXGI_FORMAT_BC6H_SF16,
@@ -496,6 +522,103 @@ public class DDSresources {
             DXGI_FORMAT_ASTC_12X12_UNORM_SRGB
         };
 
+        public static int[] supportedCompressedFormats = new int[]{
+//            DXGI_FORMAT_R9G9B9E5_SHAREDEXP,
+//            DXGI_FORMAT_R8G8_B8G8_UNORM,
+//            DXGI_FORMAT_G8R8_G8B8_UNORM,
+            DXGI_FORMAT_BC1_TYPELESS,
+            DXGI_FORMAT_BC1_UNORM,
+            DXGI_FORMAT_BC1_UNORM_SRGB,
+            DXGI_FORMAT_BC2_TYPELESS,
+            DXGI_FORMAT_BC2_UNORM,
+            DXGI_FORMAT_BC2_UNORM_SRGB,
+            DXGI_FORMAT_BC3_TYPELESS,
+            DXGI_FORMAT_BC3_UNORM,
+            DXGI_FORMAT_BC3_UNORM_SRGB,
+            DXGI_FORMAT_BC4_TYPELESS,
+            DXGI_FORMAT_BC4_UNORM,
+            DXGI_FORMAT_BC4_SNORM,
+            DXGI_FORMAT_BC5_TYPELESS,
+            DXGI_FORMAT_BC5_UNORM,
+            DXGI_FORMAT_BC5_SNORM,
+//            DXGI_FORMAT_B5G6R5_UNORM,
+//            DXGI_FORMAT_B5G5R5A1_UNORM,
+//            DXGI_FORMAT_B8G8R8A8_UNORM,
+//            DXGI_FORMAT_B8G8R8X8_UNORM,
+//            DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM,
+//            DXGI_FORMAT_B8G8R8A8_TYPELESS,
+//            DXGI_FORMAT_B8G8R8A8_UNORM_SRGB,
+//            DXGI_FORMAT_B8G8R8X8_TYPELESS,
+//            DXGI_FORMAT_B8G8R8X8_UNORM_SRGB,
+            DXGI_FORMAT_BC6H_TYPELESS,
+            DXGI_FORMAT_BC6H_UF16,
+            DXGI_FORMAT_BC6H_SF16,
+            DXGI_FORMAT_BC7_TYPELESS,
+            DXGI_FORMAT_BC7_UNORM,
+            DXGI_FORMAT_BC7_UNORM_SRGB,
+//            DXGI_FORMAT_AYUV,
+//            DXGI_FORMAT_Y410,
+//            DXGI_FORMAT_Y416,
+//            DXGI_FORMAT_NV12,
+//            DXGI_FORMAT_P010,
+//            DXGI_FORMAT_P016,
+//            DXGI_FORMAT_420_OPAQUE,
+//            DXGI_FORMAT_YUY2,
+//            DXGI_FORMAT_Y210,
+//            DXGI_FORMAT_Y216,
+//            DXGI_FORMAT_NV11,
+//            DXGI_FORMAT_AI44,
+//            DXGI_FORMAT_IA44,
+//            DXGI_FORMAT_P8,
+//            DXGI_FORMAT_A8P8,
+//            DXGI_FORMAT_B4G4R4A4_UNORM,
+//            DXGI_FORMAT_P208,
+//            DXGI_FORMAT_V208,
+//            DXGI_FORMAT_V408,
+//            DXGI_FORMAT_ASTC_4X4_TYPELESS,
+//            DXGI_FORMAT_ASTC_4X4_UNORM,
+//            DXGI_FORMAT_ASTC_4X4_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_5X4_TYPELESS,
+//            DXGI_FORMAT_ASTC_5X4_UNORM,
+//            DXGI_FORMAT_ASTC_5X4_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_5X5_TYPELESS,
+//            DXGI_FORMAT_ASTC_5X5_UNORM,
+//            DXGI_FORMAT_ASTC_5X5_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_6X5_TYPELESS,
+//            DXGI_FORMAT_ASTC_6X5_UNORM,
+//            DXGI_FORMAT_ASTC_6X5_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_6X6_TYPELESS,
+//            DXGI_FORMAT_ASTC_6X6_UNORM,
+//            DXGI_FORMAT_ASTC_6X6_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_8X5_TYPELESS,
+//            DXGI_FORMAT_ASTC_8X5_UNORM,
+//            DXGI_FORMAT_ASTC_8X5_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_8X6_TYPELESS,
+//            DXGI_FORMAT_ASTC_8X6_UNORM,
+//            DXGI_FORMAT_ASTC_8X6_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_8X8_TYPELESS,
+//            DXGI_FORMAT_ASTC_8X8_UNORM,
+//            DXGI_FORMAT_ASTC_8X8_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_10X5_TYPELESS,
+//            DXGI_FORMAT_ASTC_10X5_UNORM,
+//            DXGI_FORMAT_ASTC_10X5_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_10X6_TYPELESS,
+//            DXGI_FORMAT_ASTC_10X6_UNORM,
+//            DXGI_FORMAT_ASTC_10X6_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_10X8_TYPELESS,
+//            DXGI_FORMAT_ASTC_10X8_UNORM,
+//            DXGI_FORMAT_ASTC_10X8_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_10X10_TYPELESS,
+//            DXGI_FORMAT_ASTC_10X10_UNORM,
+//            DXGI_FORMAT_ASTC_10X10_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_12X10_TYPELESS,
+//            DXGI_FORMAT_ASTC_12X10_UNORM,
+//            DXGI_FORMAT_ASTC_12X10_UNORM_SRGB,
+//            DXGI_FORMAT_ASTC_12X12_TYPELESS,
+//            DXGI_FORMAT_ASTC_12X12_UNORM,
+//            DXGI_FORMAT_ASTC_12X12_UNORM_SRGB
+        };
+
         public static class D3d10ResourceDimension {
 
             public static final int D3D10_RESOURCE_DIMENSION_UNKNOWN = 0;
@@ -526,41 +649,7 @@ public class DDSresources {
             public static final int DDS_ALPHA_MODE_CUSTOM = (int) 0x4;
         }
     }
-
-    /**
-     * Only "broad hardware support" formats supported
-     * https://msdn.microsoft.com/en-us/library/windows/desktop/bb943991%28v=vs.85%29.aspx
-     *
-     * @param dxgiFormat
-     * @return
-     */
-//    public static int getGLinternalFormat(int dxgiFormat) {
-//
-//        switch (dxgiFormat) {
-//
-//            case Dx10.DxgiFormat.DXGI_FORMAT_R8G8B8A8_UNORM:
-//                return GL2ES3.GL_RGBA8UI;
-//
-//            case Dx10.DxgiFormat.DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
-//                return GL.GL_SRGB8_ALPHA8;
-//
-//            case Dx10.DxgiFormat.DXGI_FORMAT_R8G8B8A8_SNORM:
-//                return GL2ES3.GL_RGBA8_SNORM;
-//
-//            case Dx10.DxgiFormat.DXGI_FORMAT_B8G8R8A8_UNORM:
-//                return GL.GL_BGRA8;
-//
-//            case Dx10.DxgiFormat.DXGI_FORMAT_R16G16_SNORM:
-//                return GL2ES3.GL_RG16I;
-//
-//            case Dx10.DxgiFormat.DXGI_FORMAT_R8G8_SNORM:
-//                return GL2ES3.GL_RG8_SNORM;
-//
-//            case Dx10.DxgiFormat.DXGI_FORMAT_R8_UNORM:
-//                return GL2ES3.GL_R8UI;
-//        }
-//        return 0;
-//    }
+    
     public static final int makeFourCC(char ch0, char ch1, char ch2, char ch3) {
         return (((int) ch0)) | (((int) ch1) << 8) | (((int) ch2) << 16) | (((int) ch3) << 24);
     }
